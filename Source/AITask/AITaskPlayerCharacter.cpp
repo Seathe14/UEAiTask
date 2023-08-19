@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AAITaskPlayerCharacter::AAITaskPlayerCharacter()
 {
@@ -19,6 +20,7 @@ AAITaskPlayerCharacter::AAITaskPlayerCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 }
 
 void AAITaskPlayerCharacter::BeginPlay()
@@ -32,6 +34,22 @@ void AAITaskPlayerCharacter::BeginPlay()
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
+	}
+}
+
+void AAITaskPlayerCharacter::Run(const FInputActionValue& Value)
+{
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	}
+}
+
+void AAITaskPlayerCharacter::Walk(const FInputActionValue& Value)
+{
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	}
 }
 
@@ -49,6 +67,12 @@ void AAITaskPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AAITaskPlayerCharacter::Look);
+		
+		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Ongoing, this, &AAITaskPlayerCharacter::Run);
+
+		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Canceled, this, &AAITaskPlayerCharacter::Walk);
+
+		EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Completed, this, &AAITaskPlayerCharacter::Walk);
 
 	}
 }

@@ -37,6 +37,10 @@ class AITASK_API AAITaskPlayerCharacter : public AAITaskCharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	/** Look Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* RunAction;
+
 public:
 	AAITaskPlayerCharacter();
 	//using AAITaskCharacter::Move;
@@ -46,6 +50,11 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+private:
+	/** Called for looking input */
+	void Run(const FInputActionValue& Value);
+	void Walk(const FInputActionValue& Value);
 
 protected:
 	// APawn interface
