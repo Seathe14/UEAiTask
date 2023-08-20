@@ -41,7 +41,7 @@ void AAITaskPlayerCharacter::Run(const FInputActionValue& Value)
 {
 	if (GetCharacterMovement())
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 500.f;
+		GetCharacterMovement()->MaxWalkSpeed = 700.f;
 	}
 }
 
